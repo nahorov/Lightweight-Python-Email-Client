@@ -1,3 +1,5 @@
+from imaplib import IMAP4_SSL
+
 from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtGui, QtCore
 
@@ -11,8 +13,6 @@ from email.mime.multipart import MIMEMultipart
 import sys
 import imaplib
 
-email_folder = " "
-output_directory = "/home/rohan/temp"
 
 class MyGUI(QMainWindow):
 
@@ -125,9 +125,25 @@ class MyGUI(QMainWindow):
 
 				message_box.exec()
 
+	def dump_inbox(self):
+		email_folder = "Inbox"
+		message_box = QMessageBox()
+
+		imap = imaplib.IMAP4_SSL(self.imap_server_address.text())
+		imap.login(self.imap_email_address.text(), self.imap_password.text())
+		rv, data = imap.select(email_folder)
+		if rv == 'OK':
+			message_box.setText("Processing mailbox")
+			self.process_inbox(imap)
+			imap.close()
+		else:
+			message_box.setText("ERROR: Unable to open mailbox ")
+			imap.logout()
+
 	def process_inbox(self):
 		# Function to dump all emails in the folder to files in the input directory.
-
+		message_box = QMessageBox()
+		output_directory = "/home/rohan/temp"
 		rv, data = self.search(None, "ALL")
 		if rv != 'OK':
 			message_box.setText("Messages not found. ")
@@ -142,19 +158,6 @@ class MyGUI(QMainWindow):
 			f.write(data[0][1])
 			f.close()
 			message_box.setText("Done!")
-
-	def dump_inbox(self):
-		self.server = imaplib.IMAP4_SSL(self.imap_server_address.text(), self.imap_port_number.text())
-		self.server.login(self.email_address.text(), self.password.text())
-		rv, data = self.select(email_folder)
-		if rv == 'OK':
-			message_box.setText("Processing mailbox: ", email_folder)
-			process_mailbox(self)
-			self.close()
-		else:
-			message_box.setText("ERROR: Unable to open mailbox ", rv)
-			self.logout()
-			
 
 app = QApplication([])
 window = MyGUI()
