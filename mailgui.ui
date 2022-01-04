@@ -373,6 +373,23 @@
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
+ <tabstops>
+  <tabstop>email_address</tabstop>
+  <tabstop>password</tabstop>
+  <tabstop>smtp_server_address</tabstop>
+  <tabstop>smtp_port_number</tabstop>
+  <tabstop>login_button</tabstop>
+  <tabstop>recipient_address</tabstop>
+  <tabstop>email_subject</tabstop>
+  <tabstop>attach_button</tabstop>
+  <tabstop>email_text_body</tabstop>
+  <tabstop>send_button</tabstop>
+  <tabstop>imap_email_address</tabstop>
+  <tabstop>imap_password</tabstop>
+  <tabstop>imap_server_address</tabstop>
+  <tabstop>imap_port_number</tabstop>
+  <tabstop>dump_inbox_button</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
