@@ -127,37 +127,34 @@ class MyGUI(QMainWindow):
 
 	def dump_inbox(self):
 		email_folder = "Inbox"
+		output_directory = "/tmp"
 		message_box = QMessageBox()
 
-		imap = imaplib.IMAP4_SSL(self.imap_server_address.text())
+		imap = imaplib.IMAP4_SSL(self.imap_server_address.text(), self.imap_port_number.text())
 		imap.login(self.imap_email_address.text(), self.imap_password.text())
-		rv, data = imap.select(email_folder)
+		rv, data = imap.select("Inbox")
 		if rv == 'OK':
+			self.imap_email_address.setEnabled(False)
+			self.imap_password.setEnabled(False)
+			self.imap_server_address.setEnabled(False)
+			self.imap_port_number.setEnabled(False)
+			self.dump_inbox_button.setEnabled(False)
 			message_box.setText("Processing mailbox")
-			self.process_inbox(imap)
+			for num in data[0].split():
+				rv, data = imap.fetch(num, '(RFC822)')
+				if rv != 'OK':
+					message_box.setText("Error encountered while retrieving messages, please try again. ", num)
+					return
+				message_box.setText("Downloading mail.")
+				f = open('%s/%s.eml' % (output_directory, num), 'wb')
+				f.write(data[0][1])
+				f.close()
+				message_box.setText("Done!")
 			imap.close()
+
 		else:
 			message_box.setText("ERROR: Unable to open mailbox ")
 			imap.logout()
-
-	def process_inbox(self):
-		# Function to dump all emails in the folder to files in the input directory.
-		message_box = QMessageBox()
-		output_directory = "/home/rohan/temp"
-		rv, data = self.search(None, "ALL")
-		if rv != 'OK':
-			message_box.setText("Messages not found. ")
-			return
-
-		for num in data[0].split():
-			rv, data = self.fetch(num, '(RFC822)')
-			if rv != 'OK':
-				message_box.setText("Error encountered while retrieving messages, please try again. ", num)
-				return
-			f = open('%s/%s.eml' %(output_directory, num), 'wb')
-			f.write(data[0][1])
-			f.close()
-			message_box.setText("Done!")
 
 app = QApplication([])
 window = MyGUI()
