@@ -1,24 +1,25 @@
-from imaplib import IMAP4_SSL
+import sys
+import os
+import datetime
 
 from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtGui, QtCore
 
 import smtplib
+import imaplib
 from smtplib import *
+from imaplib import *
 from email import encoders
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 
-import sys
-import imaplib
 
-
-class MyGUI(QMainWindow):
+class main_window_outbox(QMainWindow):
 
 	def __init__(self):
-		super(MyGUI, self).__init__()
-		uic.loadUi("mailgui.ui", self)
+		super(main_window_outbox, self).__init__()
+		uic.loadUi("outbox.ui", self)
 		self.show()
 
 		self.login_button.clicked.connect(self.login)
@@ -127,8 +128,9 @@ class MyGUI(QMainWindow):
 
 	def dump_inbox(self):
 		email_folder = "Inbox"
-		output_directory = "/tmp"
 		message_box = QMessageBox()
+		output_directory = "/tmp/Email/" + datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+		os.makedirs(output_directory)
 
 		imap = imaplib.IMAP4_SSL(self.imap_server_address.text(), self.imap_port_number.text())
 		imap.login(self.imap_email_address.text(), self.imap_password.text())
@@ -157,5 +159,5 @@ class MyGUI(QMainWindow):
 			imap.logout()
 
 app = QApplication([])
-window = MyGUI()
+window = main_window_outbox()
 app.exec_()
