@@ -1,6 +1,8 @@
 import sys
 import os
 import datetime
+import sys
+import getpass
 
 from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtGui, QtCore
@@ -148,11 +150,18 @@ class main_window_outbox(QMainWindow):
 					message_box.setText("Error encountered while retrieving messages, please try again. ", num)
 					return
 				message_box.setText("Downloading mail.")
-				f = open('%s/%s.eml' % (output_directory, num), 'wb')
-				f.write(data[0][1])
-				f.close()
-				message_box.setText("Done!")
+				fname = os.path.join(output_directory, f'{int(num)}.eml')
+				message_box.setText(f'Writing message {fname}')
+				with open(fname, 'wb') as f:
+					f.write(data[0][1])
+			f.close()
 			imap.close()
+			self.imap_email_address.setEnabled(True)
+			self.imap_password.setEnabled(True)
+			self.imap_server_address.setEnabled(True)
+			self.imap_port_number.setEnabled(True)
+			self.dump_inbox_button.setEnabled(True)
+			message_box.setText("Done!")
 
 		else:
 			message_box.setText("ERROR: Unable to open mailbox ")
