@@ -1,7 +1,5 @@
-
 import os
 import datetime
-
 
 from PyQt5.QtWidgets import *
 from PyQt5 import uic, QtGui, QtCore
