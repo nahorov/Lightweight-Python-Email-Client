@@ -156,16 +156,17 @@ class main_window_outbox(QMainWindow):
 					f.write(data[0][1])
 			f.close()
 			imap.close()
-			self.imap_email_address.setEnabled(True)
-			self.imap_password.setEnabled(True)
-			self.imap_server_address.setEnabled(True)
-			self.imap_port_number.setEnabled(True)
-			self.dump_inbox_button.setEnabled(True)
 			message_box.setText("Done!")
 
 		else:
 			message_box.setText("ERROR: Unable to open mailbox ")
 			imap.logout()
+
+		self.imap_email_address.setEnabled(True)
+		self.imap_password.setEnabled(True)
+		self.imap_server_address.setEnabled(True)
+		self.imap_port_number.setEnabled(True)
+		self.dump_inbox_button.setEnabled(True)
 
 app = QApplication([])
 window = main_window_outbox()
